@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>JBT Yangiliklar Arxivi — WCO Newsroom Archive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #16314c;
+    --ink-soft: #335072;
+    --paper: #eef1f4;
+    --card: #ffffff;
+    --stamp: #b0392c;
+    --line: #d3d9e0;
+    --muted: #6a7686;
+    --shadow: 0 1px 2px rgba(22,49,76,.06), 0 8px 24px rgba(22,49,76,.05);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Inter", system-ui, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+  /* ---- Masthead ---- */
+  header.masthead {
+    border-bottom: 2px solid var(--ink);
+    background: var(--paper);
+    position: relative;
+  }
+  .masthead-inner { padding: 38px 0 26px; }
+  .eyebrow {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--stamp);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .eyebrow::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+  h1.title {
+    font-family: "Archivo", sans-serif;
+    font-weight: 800;
+    font-size: clamp(28px, 5vw, 46px);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    margin: 14px 0 4px;
+  }
+  h1.title .uz { color: var(--ink); }
+  h1.title .en {
+    display: block;
+    font-size: clamp(15px, 2.4vw, 21px);
+    font-weight: 600;
+    color: var(--ink-soft);
+    letter-spacing: 0;
+    margin-top: 6px;
+  }
+  .lede {
+    margin-top: 16px;
+    max-width: 60ch;
+    color: var(--muted);
+    font-size: 15px;
+  }
+  .registry-figure {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-top: 22px;
+    font-family: "IBM Plex Mono", monospace;
+  }
+  .registry-figure .num {
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .registry-figure .lbl {
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ---- Controls ---- */
+  .controls {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(238,241,244,.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+    padding: 14px 0;
+  }
+  .controls-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+  }
+  .search {
+    flex: 1 1 240px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 9px 13px;
+  }
+  .search:focus-within { border-color: var(--ink-soft); box-shadow: 0 0 0 3px rgba(51,80,114,.12); }
+  .search svg { flex: none; color: var(--muted); }
+  .search input {
+    border: none;
+    outline: none;
+    background: none;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--ink);
+    width: 100%;
+  }
+  /* Language toggle = pair of stamps */
+  .langset { display: flex; gap: 0; border: 1px solid var(--ink); border-radius: 8px; overflow: hidden; }
+  .langset button {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    padding: 9px 14px;
+    background: var(--card);
+    color: var(--ink);
+    border: none;
+    cursor: pointer;
+    border-right: 1px solid var(--ink);
+    transition: background .15s, color .15s;
+  }
+  .langset button:last-child { border-right: none; }
+  .langset button[aria-pressed="true"] { background: var(--ink); color: #fff; }
+  .yearset { display: flex; gap: 6px; flex-wrap: wrap; }
+  .chip {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    border-radius: 999px;
+    cursor: pointer;
+    color: var(--ink-soft);
+    transition: all .15s;
+  }
+  .chip[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+  /* Date range + ZIP row */
+  .controls-row-2 { margin-top: 11px; justify-content: space-between; }
+  .daterange {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+  .dr-label { letter-spacing: .04em; text-transform: uppercase; font-size: 11px; }
+  .daterange input[type="date"] {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 13px;
+    color: var(--ink);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    padding: 7px 9px;
+  }
+  .daterange input[type="date"]:focus { outline: none; border-color: var(--ink-soft); box-shadow: 0 0 0 3px rgba(51,80,114,.12); }
+  .dr-sep { color: var(--muted); }
+  .dr-clear {
+    border: none; background: none; cursor: pointer;
+    color: var(--muted); font-size: 14px; padding: 4px 6px; border-radius: 6px;
+  }
+  .dr-clear:hover { background: #e3e7ec; color: var(--ink); }
+  .zipbtn {
+    display: inline-flex; align-items: center; gap: 9px;
+    font-family: "Inter", sans-serif; font-size: 13.5px; font-weight: 600;
+    color: #fff; background: var(--stamp);
+    border: none; border-radius: 9px; padding: 10px 16px; cursor: pointer;
+    transition: background .15s, transform .1s;
+  }
+  .zipbtn:hover { background: #9a3025; }
+  .zipbtn:active { transform: translateY(1px); }
+  .zipbtn:disabled { background: var(--muted); cursor: progress; }
+  .zipbtn svg { width: 16px; height: 16px; }
+
+  /* ---- Notice banner ---- */
+  .notice {
+    margin: 18px 0 0;
+    padding: 12px 16px;
+    border-left: 3px solid var(--stamp);
+    background: #fff;
+    border-radius: 0 8px 8px 0;
+    font-size: 14px;
+    color: var(--ink-soft);
+    box-shadow: var(--shadow);
+  }
+  .notice b { color: var(--ink); }
+
+  /* ---- Entry list ---- */
+  main { padding: 26px 0 80px; }
+  .count-line {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: .06em;
+    margin-bottom: 16px;
+  }
+  .entry {
+    display: grid;
+    grid-template-columns: 116px 1fr;
+    gap: 22px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px 22px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow);
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+  .entry:hover { transform: translateY(-1px); box-shadow: 0 2px 4px rgba(22,49,76,.08), 0 14px 32px rgba(22,49,76,.09); }
+
+  /* Date stamp */
+  .stamp-date {
+    font-family: "IBM Plex Mono", monospace;
+    border: 1.5px solid var(--ink-soft);
+    border-radius: 8px;
+    padding: 10px 8px;
+    text-align: center;
+    align-self: start;
+    color: var(--ink);
+    position: relative;
+  }
+  .stamp-date .d { font-size: 22px; font-weight: 600; line-height: 1; }
+  .stamp-date .m { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; margin-top: 4px; color: var(--ink-soft); }
+  .stamp-date .y { font-size: 12px; margin-top: 2px; color: var(--muted); }
+
+  .entry-body { min-width: 0; }
+  .entry-title {
+    font-family: "Archivo", sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .entry-title .alt {
+    display: block;
+    font-family: "Inter", sans-serif;
+    font-weight: 500;
+    font-size: 14.5px;
+    color: var(--ink-soft);
+    margin-top: 6px;
+    line-height: 1.4;
+  }
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+  .lang-block {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .lang-tag {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    padding: 8px 10px;
+    color: #fff;
+  }
+  .lang-tag.en { background: var(--ink); }
+  .lang-tag.uz { background: var(--stamp); }
+  .act {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: "Inter", sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 12px;
+    background: var(--card);
+    color: var(--ink);
+    text-decoration: none;
+    border-left: 1px solid var(--line);
+    transition: background .12s;
+  }
+  .act:hover { background: #f1f4f8; }
+  .act svg { width: 14px; height: 14px; color: var(--ink-soft); }
+  .act.disabled { color: var(--muted); pointer-events: none; opacity: .5; }
+
+  /* States */
+  .state {
+    text-align: center;
+    padding: 70px 20px;
+    color: var(--muted);
+  }
+  .state h3 {
+    font-family: "Archivo", sans-serif;
+    color: var(--ink);
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+  .state code {
+    font-family: "IBM Plex Mono", monospace;
+    background: #fff;
+    border: 1px solid var(--line);
+    padding: 2px 6px;
+    border-radius: 5px;
+    font-size: 13px;
+  }
+  .spinner {
+    width: 26px; height: 26px;
+    border: 3px solid var(--line);
+    border-top-color: var(--ink);
+    border-radius: 50%;
+    margin: 0 auto 18px;
+    animation: spin .8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 24px 0;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    letter-spacing: .06em;
+    color: var(--muted);
+    text-align: center;
+  }
+  footer a { color: var(--ink-soft); }
+
+  @media (max-width: 640px) {
+    .entry { grid-template-columns: 1fr; gap: 14px; }
+    .stamp-date { display: inline-block; }
+    .controls-row-2 { flex-direction: column; align-items: stretch; }
+    .daterange { flex-wrap: wrap; }
+    .zipbtn { justify-content: center; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap masthead-inner">
+    <div class="eyebrow">JAHON BOJXONA TASHKILOTI · ARXIV</div>
+    <h1 class="title">
+      <span class="uz">Yangiliklar arxivi</span>
+      <span class="en">WCO Newsroom Archive — bilingual document registry</span>
+    </h1>
+    <p class="lede">
+      wcoomd.org saytidagi har bir yangilik avtomatik ravishda ikki tilda —
+      ingliz va professional o'zbek tarjimasida — PDF qilib saqlanadi
+      (ishga tushishdan 6 oy oldingi davr va undan keyingi barchasi).
+      Sana oralig'ini tanlab, hammasini bitta ZIP qilib yuklab oling.
+    </p>
+    <div class="registry-figure">
+      <span class="num" id="totalNum">—</span>
+      <span class="lbl">arxivlangan<br>yangilik</span>
+    </div>
+  </div>
+</header>
+
+<div class="controls">
+  <div class="wrap controls-row">
+    <label class="search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input type="search" id="search" placeholder="Sarlavha bo'yicha qidirish…" autocomplete="off" />
+    </label>
+    <div class="langset" role="group" aria-label="Til">
+      <button data-lang="both" aria-pressed="true">EN + UZ</button>
+      <button data-lang="en" aria-pressed="false">EN</button>
+      <button data-lang="uz" aria-pressed="false">UZ</button>
+    </div>
+    <div class="yearset" id="yearset"></div>
+  </div>
+  <div class="wrap controls-row controls-row-2">
+    <div class="daterange">
+      <span class="dr-label">Oraliq:</span>
+      <input type="date" id="from" aria-label="Boshlanish sanasi" />
+      <span class="dr-sep">—</span>
+      <input type="date" id="to" aria-label="Tugash sanasi" />
+      <button class="dr-clear" id="clearRange" title="Oraliqni tozalash">✕</button>
+    </div>
+    <button class="zipbtn" id="zipBtn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+      <span id="zipBtnText">Tanlangan oraliqni ZIP qilib yuklash</span>
+    </button>
+  </div>
+</div>
+
+<main class="wrap">
+  <div id="notice"></div>
+  <div class="count-line" id="countLine" aria-live="polite"></div>
+  <div id="list">
+    <div class="state"><div class="spinner"></div>Arxiv yuklanmoqda…</div>
+  </div>
+</main>
+
+<footer class="wrap">
+  Manba: <a href="https://www.wcoomd.org" target="_blank" rel="noopener">wcoomd.org</a>
+  · Avtomatik arxivlash tizimi · Fayllar Google Drive'da saqlanadi
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+// ============ Sozlama ============
+// GitHub Pages: data.json to'g'ridan-to'g'ri o'qiladi (server kerak emas)
+const DATA_URL = "./data.json";
+
+const MONTHS_UZ = {
+  January:"Yanvar", February:"Fevral", March:"Mart", April:"Aprel",
+  May:"May", June:"Iyun", July:"Iyul", August:"Avgust",
+  September:"Sentabr", October:"Oktabr", November:"Noyabr", December:"Dekabr"
+};
+const MONTH_NUM = {
+  January:1,February:2,March:3,April:4,May:5,June:6,
+  July:7,August:8,September:9,October:10,November:11,December:12
+};
+
+const DEMO = [
+  { date:"01 June 2026", year:"2026", month:"June",
+    title:"Global Trade Takes a Digital Leap with eATA Rollout in 30 Countries",
+    titleUz:"Global savdo elektron ATA tizimining 30 mamlakatda joriy etilishi bilan raqamli sakrash qildi",
+    en:{open:"#",download:"#"}, uz:{open:"#",download:"#"} },
+  { date:"12 May 2026", year:"2026", month:"May",
+    title:"WCO Releases Updated Harmonized System Correlation Tables",
+    titleUz:"JBT yangilangan Uyg'unlashtirilgan Tizim korrelyatsiya jadvallarini chiqardi",
+    en:{open:"#",download:"#"}, uz:{open:"#",download:"#"} },
+];
+
+let ALL = [];
+let state = { lang: "both", year: "all", q: "", from: "", to: "" };
+
+const $ = (s) => document.querySelector(s);
+const listEl = $("#list");
+
+function parseDate(it) {
+  const m = (it.date||"").match(/(\d{1,2})\s+(\w+)\s+(\d{4})/);
+  if (!m) return { d:0, mo:0, y:parseInt(it.year)||0, key:0 };
+  const d=+m[1], mo=MONTH_NUM[m[2]]||0, y=+m[3];
+  return { d, mo, y, key: y*10000 + mo*100 + d };
+}
+
+function icon(name){
+  if(name==="open") return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>';
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>';
+}
+
+function langBlock(tag, data){
+  const cls = tag.toLowerCase();
+  const open = data && data.open && data.open !== "#"
+    ? `<a class="act" href="${data.open}" target="_blank" rel="noopener">${icon("open")} Ochish</a>`
+    : `<span class="act disabled">${icon("open")} Ochish</span>`;
+  const dl = data && data.download && data.download !== "#"
+    ? `<a class="act" href="${data.download}">${icon("download")} Yuklab olish</a>`
+    : `<span class="act disabled">${icon("download")} Yuklab olish</span>`;
+  return `<div class="lang-block"><span class="lang-tag ${cls}">${tag}</span>${open}${dl}</div>`;
+}
+
+function render(){
+  const q = state.q.trim().toLowerCase();
+  const fromKey = state.from ? dateStrToKey(state.from) : null;
+  const toKey = state.to ? dateStrToKey(state.to) : null;
+  let items = ALL.filter(it=>{
+    if(state.year!=="all" && String(it.year)!==state.year) return false;
+    if(fromKey || toKey){
+      const k = parseDate(it).key;
+      if(k){
+        if(fromKey && k < fromKey) return false;
+        if(toKey && k > toKey) return false;
+      }
+    }
+    if(q){
+      const hay = (it.title+" "+(it.titleUz||"")).toLowerCase();
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  });
+  items.sort((a,b)=> parseDate(b).key - parseDate(a).key);
+
+  $("#countLine").textContent =
+    items.length ? `${items.length} ta yozuv ko'rsatilmoqda` : "";
+
+  if(!items.length){
+    listEl.innerHTML = `<div class="state"><h3>Hech narsa topilmadi</h3>
+      <p>Qidiruv yoki filtrlarni o'zgartirib ko'ring.</p></div>`;
+    return;
+  }
+
+  listEl.innerHTML = items.map(it=>{
+    const p = parseDate(it);
+    const moUz = MONTHS_UZ[it.month] || it.month || "";
+    const showEn = state.lang!=="uz";
+    const showUz = state.lang!=="en";
+
+    let titleHtml = "";
+    if(state.lang==="uz"){
+      titleHtml = `${esc(it.titleUz||it.title)}`;
+    } else if(state.lang==="en"){
+      titleHtml = `${esc(it.title)}`;
+    } else {
+      titleHtml = `${esc(it.title)}<span class="alt">${esc(it.titleUz||"")}</span>`;
+    }
+
+    let acts = "";
+    if(showEn) acts += langBlock("EN", it.en);
+    if(showUz) acts += langBlock("UZ", it.uz);
+
+    return `<article class="entry">
+      <div class="stamp-date">
+        <div class="d">${p.d? String(p.d).padStart(2,"0") : "—"}</div>
+        <div class="m">${moUz.slice(0,3)}</div>
+        <div class="y">${p.y||it.year||""}</div>
+      </div>
+      <div class="entry-body">
+        <div class="entry-title">${titleHtml}</div>
+        <div class="actions">${acts}</div>
+      </div>
+    </article>`;
+  }).join("");
+}
+
+function esc(s){ return (s||"").replace(/[&<>"]/g, c=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c])); }
+
+function dateStrToKey(s){
+  const m = (s||"").match(/(\d{4})-(\d{2})-(\d{2})/);
+  if(!m) return null;
+  return (+m[1])*10000 + (+m[2])*100 + (+m[3]);
+}
+
+// Sana oralig'i boshqaruvlari
+$("#from").addEventListener("change", e=>{ state.from = e.target.value; render(); });
+$("#to").addEventListener("change", e=>{ state.to = e.target.value; render(); });
+$("#clearRange").addEventListener("click", ()=>{
+  state.from = ""; state.to = "";
+  $("#from").value = ""; $("#to").value = "";
+  render();
+});
+
+// =====================================================================
+// ZIP yuklab olish — BRAUZERDA (server kerak emas!)
+// Google Drive fayllarini to'g'ridan-to'g'ri yuklab, JSZip bilan birlashtiramiz.
+// =====================================================================
+$("#zipBtn").addEventListener("click", async ()=>{
+  const btn = $("#zipBtn"), txt = $("#zipBtnText");
+
+  // Joriy filtrlarga mos elementlarni tanlash
+  const q = state.q.trim().toLowerCase();
+  const fromKey = state.from ? dateStrToKey(state.from) : null;
+  const toKey = state.to ? dateStrToKey(state.to) : null;
+
+  let items = ALL.filter(it=>{
+    if(state.year!=="all" && String(it.year)!==state.year) return false;
+    if(fromKey || toKey){
+      const k = parseDate(it).key;
+      if(k){
+        if(fromKey && k < fromKey) return false;
+        if(toKey && k > toKey) return false;
+      }
+    }
+    if(q){
+      const hay = (it.title+" "+(it.titleUz||"")).toLowerCase();
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  if(!items.length){
+    showNotice("<b>Filtrga mos yozuv topilmadi.</b> Avval sana oralig'ini yoki yilni tanlang.");
+    return;
+  }
+
+  const MAX = 200;
+  if(items.length > MAX){
+    showNotice(`<b>Ko'p fayl!</b> ${items.length} ta fayl bor. Iltimos, oraliqni yoki yilni toraytirib, qayta bosing (maksimal ${MAX} ta).`);
+    return;
+  }
+
+  btn.disabled = true;
+  const origText = txt.textContent;
+
+  try {
+    const zip = new JSZip();
+    const wantEn = state.lang !== "uz";
+    const wantUz = state.lang !== "en";
+
+    // Yuklab olinadigan fayllar ro'yxati
+    const targets = [];
+    for(const it of items){
+      const folder = `${it.year||"unknown"}/${it.month||"unknown"}`;
+      if(wantEn && it.en && it.enFileId){
+        const url = `https://drive.google.com/uc?export=download&id=${it.enFileId}`;
+        targets.push({ url, path: `EN/${folder}/${it.enName||"news_en.pdf"}` });
+      }
+      if(wantUz && it.uz && it.uzFileId){
+        const url = `https://drive.google.com/uc?export=download&id=${it.uzFileId}`;
+        targets.push({ url, path: `UZ/${folder}/${it.uzName||"news_uz.pdf"}` });
+      }
+    }
+
+    let done = 0;
+    const total = targets.length;
+
+    // Parallel (5 tadan) yuklab olamiz
+    const BATCH = 5;
+    for(let i = 0; i < targets.length; i += BATCH){
+      const batch = targets.slice(i, i + BATCH);
+      const results = await Promise.allSettled(
+        batch.map(async t => {
+          const r = await fetch(t.url);
+          if(!r.ok) throw new Error(`HTTP ${r.status}: ${t.path}`);
+          const buf = await r.arrayBuffer();
+          return { path: t.path, buf };
+        })
+      );
+      for(const res of results){
+        done++;
+        txt.textContent = `Yuklanmoqda… ${done}/${total}`;
+        if(res.status === "fulfilled"){
+          zip.file(res.value.path, res.value.buf);
+        } else {
+          console.warn("Fayl yuklanmadi:", res.reason);
+        }
+      }
+    }
+
+    txt.textContent = "ZIP tayyorlanmoqda…";
+    const content = await zip.generateAsync({ type: "blob", compression: "DEFLATE" });
+
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(content);
+    const tag = `${state.from||"boshlanish"}_${state.to||"hozir"}`;
+    a.download = `WCO_news_${tag}.zip`;
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(a.href);
+
+    txt.textContent = origText;
+    showNotice(`✅ ZIP tayyor: ${done} ta fayl yuklab olindi.`);
+  } catch(err) {
+    txt.textContent = origText;
+    showNotice(`<b>ZIP xatosi:</b> ${esc(err.message)}`);
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+function buildYears(){
+  const years = [...new Set(ALL.map(i=>String(i.year)).filter(Boolean))].sort().reverse();
+  const set = $("#yearset");
+  set.innerHTML =
+    `<button class="chip" data-year="all" aria-pressed="true">Barchasi</button>` +
+    years.map(y=>`<button class="chip" data-year="${y}" aria-pressed="false">${y}</button>`).join("");
+  set.querySelectorAll(".chip").forEach(b=>{
+    b.onclick = ()=>{
+      set.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed","false"));
+      b.setAttribute("aria-pressed","true");
+      state.year = b.dataset.year;
+      render();
+    };
+  });
+}
+
+document.querySelectorAll(".langset button").forEach(b=>{
+  b.onclick = ()=>{
+    document.querySelectorAll(".langset button").forEach(x=>x.setAttribute("aria-pressed","false"));
+    b.setAttribute("aria-pressed","true");
+    state.lang = b.dataset.lang;
+    render();
+  };
+});
+
+let searchTimer;
+$("#search").addEventListener("input", e=>{
+  clearTimeout(searchTimer);
+  const v = e.target.value;
+  searchTimer = setTimeout(()=>{ state.q = v; render(); }, 180);
+});
+
+function showNotice(html){ $("#notice").innerHTML = `<div class="notice">${html}</div>`; }
+
+async function load(){
+  try{
+    const r = await fetch(DATA_URL + "?t=" + Date.now());
+    if(!r.ok) throw new Error("HTTP " + r.status);
+    const data = await r.json();
+    const rawItems = Array.isArray(data.items) ? data.items : [];
+
+    // data.json formatidan veb-sayt formatiga o'tkazish
+    ALL = rawItems.map(it=>({
+      url: it.url,
+      title: it.title || "",
+      titleUz: it.titleUz || "",
+      date: it.date || "",
+      year: it.year || "",
+      month: it.month || "",
+      archivedAt: it.archivedAt || "",
+      enFileId: it.enFileId || null,
+      uzFileId: it.uzFileId || null,
+      en: {
+        open: it.enLink || (it.enFileId ? `https://drive.google.com/file/d/${it.enFileId}/view` : null),
+        download: it.enFileId ? `https://drive.google.com/uc?export=download&id=${it.enFileId}` : null
+      },
+      uz: {
+        open: it.uzLink || (it.uzFileId ? `https://drive.google.com/file/d/${it.uzFileId}/view` : null),
+        download: it.uzFileId ? `https://drive.google.com/uc?export=download&id=${it.uzFileId}` : null
+      }
+    }));
+
+    if(!ALL.length){
+      $("#totalNum").textContent = "0";
+      buildYears();
+      listEl.innerHTML = `<div class="state"><h3>Arxiv hali bo'sh</h3>
+        <p>Birinchi yangiliklar GitHub Actions ishga tushgach shu yerda paydo bo'ladi.</p></div>`;
+      return;
+    }
+    $("#totalNum").textContent = ALL.length;
+    buildYears();
+    render();
+  }catch(err){
+    ALL = DEMO;
+    $("#totalNum").textContent = DEMO.length;
+    buildYears();
+    render();
+    showNotice(`<b>Namuna ko'rinishi.</b> data.json yuklanmadi: ${esc(err.message)}`);
+  }
+}
+
+load();
+</script>
+</body>
+</html>

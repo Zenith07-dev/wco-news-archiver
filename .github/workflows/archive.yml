@@ -1,0 +1,82 @@
+name: WCO News Archiver
+
+on:
+  schedule:
+    # Har kuni soat 06:00 UTC (Toshkent 11:00)
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+    inputs:
+      months:
+        description: "Necha oy oldingi (0 = hammasi)"
+        required: false
+        default: "6"
+      years:
+        description: "Yillar (masalan: 2024,2025,2026)"
+        required: false
+        default: ""
+      limit:
+        description: "Maksimal yangi fayl soni"
+        required: false
+        default: "100"
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # data.json ni commit qilish uchun
+
+    steps:
+      - name: Reponi yuklab olish
+        uses: actions/checkout@v4
+
+      - name: Node.js 20 o'rnatish
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: runner/package-lock.json
+
+      - name: Kutubxonalarni o'rnatish
+        working-directory: runner
+        run: npm ci
+
+      - name: Arxivlash skriptini ishga tushirish
+        working-directory: runner
+        env:
+          # Google Drive
+          WCO_ROOT_FOLDER_ID: ${{ secrets.WCO_ROOT_FOLDER_ID }}
+          # Service Account JSON (base64 kodlangan)
+          GOOGLE_SA_JSON: ${{ secrets.GOOGLE_SA_JSON }}
+          # Tarjima
+          TRANSLATE_PRIMARY: ${{ secrets.TRANSLATE_PRIMARY || 'google' }}
+          GOOGLE_TRANSLATE_API_KEY: ${{ secrets.GOOGLE_TRANSLATE_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_MODEL: ${{ secrets.CLAUDE_MODEL || 'claude-sonnet-4-6' }}
+          # Sozlamalar
+          WCO_YEARS: ${{ github.event.inputs.years || '' }}
+          WCO_LIMIT: ${{ github.event.inputs.limit || '100' }}
+          WCO_MONTHS: ${{ github.event.inputs.months || '6' }}
+        run: node run.js
+
+      - name: data.json ni public/ papkasiga ko'chirish
+        run: |
+          cp runner/data.json public/data.json
+          echo "Ko'chirildi: $(wc -c < public/data.json) bayt"
+
+      - name: O'zgarishlarni commit qilish
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/data.json
+          if git diff --staged --quiet; then
+            echo "Yangi o'zgarish yo'q — commit kerak emas"
+          else
+            UPLOADED=$(node -e "
+              const d = require('./public/data.json');
+              const today = new Date().toISOString().slice(0,10);
+              const todayItems = (d.items||[]).filter(i => i.archivedAt && i.archivedAt.startsWith(today));
+              console.log(todayItems.length);
+            " 2>/dev/null || echo "?")
+            git commit -m "arxiv: +${UPLOADED} yangilik [$(date -u +%Y-%m-%d)]"
+            git push
+          fi

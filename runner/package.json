@@ -1,0 +1,20 @@
+{
+  "name": "wco-archiver-runner",
+  "version": "2.0.0",
+  "description": "WCO News Archiver — GitHub Actions runner (tekin stack)",
+  "main": "run.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node run.js",
+    "test": "node run.js --dry-run"
+  },
+  "dependencies": {
+    "axios": "^1.7.0",
+    "cheerio": "^1.0.0",
+    "googleapis": "^137.0.0",
+    "jszip": "^3.10.1",
+    "pdfkit": "^0.15.2"
+  }
+}
